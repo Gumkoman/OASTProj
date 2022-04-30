@@ -1,4 +1,4 @@
-from classes import Gene, Chromosome
+from classes import Gene, Chromosome, Result
 import random
 from math import ceil
 import numpy
@@ -23,12 +23,22 @@ class Evelutionary:
         self.deafultPopulationSize = deafultPopulationSize
         self.seed=seed
         self.problem_to_solve = ""  # DAP or DDAP
-        self.demandList = demandList
-        self.linkList = linkList
+        self.demands_list = demandList
+        self.links_list = linkList
+
+    def stop_condition(self, elapsed_time, generations, mutations, unimproved_generations):
+        if self.stop_input == "1":
+            return elapsed_time <= self.max_number_of_seconds
+        elif self.stop_input == "2":
+            return generations <= self.max_number_of_generations
+        elif self.stop_input == "3":
+            return mutations <= self.max_number_of_mutations
+        elif self.stop_input == "4":
+            return unimproved_generations <= self.max_unimproved_generations
 
     def evolutionarySimulation(self):
-        currentPopulation = self.generate_first_population(self.demandList,self.deafultPopulationSize)
-        self.calculate_fitness(self.linkList,self.demandList,currentPopulation)
+        current_population = self.generate_first_population(self.demands_list,self.deafultPopulationSize)
+        self.calculate_fitness(self.links_list,self.demands_list,current_population)
 
         current_population.sort(key=lambda x: x.fitness, reverse=False)
         current_population=current_population[:200]
@@ -101,14 +111,31 @@ class Evelutionary:
             link_loads = self.get_link_loads(best_chromosome, self.links_list, self.demands_list)
             link_sizes = self.get_link_sizes(link_loads, self.links_list)
 
+            result = Result(
+                seed=self.seed,
+                generations=generations_counter,
+                time=time_elapsed,
+                population=self.default_population_size,
+                mutation_prob=self.mutation_probability,
+                crossover_prob=self.crossover_probability_mul,
+                best_fitness=best_fitness,
+                best_chromosome=best_chromosome,
+                link_load_list=link_loads,
+                link_size_list=link_sizes,
+                network=123
+            )
+
+        result.print()
+        result.file_write(self.problem_to_solve)
+
 
     def generate_chromosome(self,list_of_demands):
         list_of_genes = list()  # Empty list for appending Genes
 
         # Generate genes for each demand
         for demand in list_of_demands:
-            demand_volume = demand.demand_volume  # Get demand volume for the gene
-            number_of_demand_paths = demand.number_of_demand_paths  # Length of the gene
+            demand_volume = demand.volume  # Get demand volume for the gene
+            number_of_demand_paths = len(demand.demandPaths)  # Length of the gene
 
             path_flow_list = [0] * number_of_demand_paths  # Init with zeros
 
@@ -262,13 +289,13 @@ class Evelutionary:
 
             if self.problem_to_solve == "DAP":
                 for e in range(len(links)):
-                    f[e] = l[e] - links[e].number_of_modules * links[e].link_module  # Calc link overloads
+                    f[e] = l[e] - links[e].number_of_modules * links[e].numOfLambdas  # Calc link overloads
                 chromosome.fitness = max(f)
 
             else:  # DDAP
                 for e in range(len(links)):
-                    y[e] = ceil(l[e] / links[e].link_module)  # Calc link sizes
-                    chromosome.fitness += y[e] * links[e].unit_cost
+                    y[e] = ceil(l[e] / links[e].numOfLambdas)  # Calc link sizes
+                    chromosome.fitness += y[e] * links[e].fiberCost
 
 
     # Calculate link loads for the given chromosome
@@ -290,14 +317,14 @@ class Evelutionary:
         number_of_links = len(links)
         y = [0] * number_of_links  # Init link sizes list with zeros
         for e in range(len(links)):
-            y[e] = ceil(link_loads[e] / links[e].link_module)
+            y[e] = ceil(link_loads[e] / links[e].numOfLambdas)
         return y
 
 
     # Check if given link is in a given demand path
     def check_link_in_demand(self,link, demand, path_num):
-        demand_path = demand.list_of_demand_paths[path_num]
-        return str(link) in demand_path.link_id_list
+        demand_path = demand.demandPaths[path_num]
+        return str(link) in demand_path.id_demand_path
 
 
     def get_random_bool(self,probability: float):

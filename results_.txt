@@ -1,0 +1,20 @@
+Network:					123
+Seed:						123
+Generations:				430
+Time elapsed:				10.011292934417725
+Initial population size:	3000
+Mutation probability:		0.01
+Crossover prob. mult.:		0.9
+Best fitness:				11
+
+Best chromosome:
+Demand 1: [0, 1, 2]
+Demand 2: [2, 1, 1]
+Demand 3: [0, 5]
+Demand 4: [0, 1, 1]
+Demand 5: [0, 2, 1]
+Demand 6: [1, 2, 1]
+Link loads ("number of signals"):
+[3, 12, 6, 0, 0]
+Link sizes ("number of fibers"):
+[2, 6, 3, 0, 0]
