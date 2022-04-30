@@ -6,6 +6,9 @@ inputList= ['','input/net4.txt','input/net12_1.txt','input/net12_2.txt']
 
 
 
+def simulationEvolution():
+    pass
+
 
 def main():
     while(1):
