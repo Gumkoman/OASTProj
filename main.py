@@ -26,7 +26,22 @@ def main():
             bf = BruteForce(demandList,linkList)
             bf.run(demandList)
         elif alghoritmType == "2":
-            pass
+            seed = input("Podaj wartość seed\n")
+            deafultPopulationSize = input("Podaj rozmiar populacji\n")
+            crossoverProbabilityMul = input("Podaj corossover probability\n")
+            stopAlgorithm = ("Podaj Kryterium zatrzymania algorytmu\n1.Liczba sekund\n2.Liczba generacji\n3.Liczba mutacji\n4.Brak poprawy przez N populacji")
+            if stopAlgorithm == '1':
+                secondsNumber = input("Podaj liczbę sekund działania algorytmu\n")
+            elif stopAlgorithm == '2':
+                generationNumber = input("Podaj liczbę generacji działania algorytmu\n")
+            elif stopAlgorithm == '3':
+                mutationNumber = input("Podaj liczbę mutacji działania algorytmu\n")
+            elif stopAlgorithm == '4':
+                noImproveNumber = input("Podaj liczbę generacji bez poprawy działania algorytmu\n")
+            else:
+                print("Podano nie poprawną wartość")
+                break
+            simulationEvolution()
         else:
             print("Podano nie poprawną wartość")
             break

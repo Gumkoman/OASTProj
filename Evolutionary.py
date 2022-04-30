@@ -1,4 +1,4 @@
-from Classes import Gene, Chromosome
+from classes import Gene, Chromosome
 import random
 from math import ceil
 import numpy
