@@ -112,8 +112,7 @@ class Result:
                  best_fitness: int,
                  best_chromosome: Chromosome,
                  link_load_list,
-                 link_size_list,
-                 network):
+                 link_size_list):
         self.seed = seed
         self.generations = generations
         self.time = time
@@ -124,11 +123,10 @@ class Result:
         self.best_chromosome = best_chromosome
         self.link_load_list = link_load_list
         self.link_size_list = link_size_list
-        self.network = network
+
 
     def get_strings(self):
         strings = [
-            "Network:\t\t\t\t\t{}".format(self.network),
             "Seed:\t\t\t\t\t\t{}".format(self.seed),
             "Generations:\t\t\t\t{}".format(self.generations),
             "Time elapsed:\t\t\t\t{}".format(self.time),

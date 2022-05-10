@@ -4,19 +4,20 @@ def createNetwork(path):
     with open(path) as f:
         # print('st1art')
         # print(f.readlines())
-        print(" ",f.readline().replace("\n",''))
+        # print(" ",f.readline().replace("\n",''))
+        f.readline().replace("\n",'')
         listOfLinks = []
         for line in f.readlines():
             if "-1" in line: break
             items = line.replace("\n",'').split(" ")
             listOfLinks.append(Link(items[0],items[1],items[2],items[3],items[4]))
         
-        for item in listOfLinks:
-            item.printSelf()
+        # for item in listOfLinks:
+        #     item.printSelf()
         return listOfLinks
 
 def createDemands(path):
-    print('demands')
+    # print('demands')
     demandList = []
     with open(path) as f:
         demandsText = f.read().split("-1\n")[1]
@@ -38,6 +39,6 @@ def createDemands(path):
                 pathList.append(DemandPath(pathId,path))
             # print(pathList)
             demandList.append(Demand(startNode,endNode,volume,pathList))
-    for item in demandList:
-        item.printSelf()
+    # for item in demandList:
+    #     item.printSelf()
     return demandList

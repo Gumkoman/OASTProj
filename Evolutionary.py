@@ -7,14 +7,14 @@ import time
 
 
 class Evelutionary:
-    def __init__(self,demandList,linkList,stop_input,max_number_of_seconds,max_number_of_generations,max_number_of_mutations,max_unimproved_generations,seed,deafultPopulationSize):
+    def __init__(self,demandList,linkList,stop_input,max_number_of_seconds,max_number_of_generations,max_number_of_mutations,max_unimproved_generations,seed,deafultPopulationSize,crossoverProbabilityMul,mutationProbability,problemToSolve):
         self.DEFAULT_POPULATION_SIZE = 10
         self.DEFAULT_MUTATION_PROBABILITY = 0.01
         self.OFFSPRING_FROM_PARENT_PROBABILITY = 0.5
         self.not_improved_in_N_generations = 100
         self.default_population_size = 3000
-        self.mutation_probability = 0.01
-        self.crossover_probability_mul = 0.9
+        self.mutation_probability = mutationProbability
+        self.crossover_probability_mul = crossoverProbabilityMul
         self.stop_input = stop_input
         self.max_number_of_seconds = max_number_of_seconds
         self.max_number_of_generations = max_number_of_generations
@@ -22,7 +22,7 @@ class Evelutionary:
         self.max_unimproved_generations = max_unimproved_generations
         self.deafultPopulationSize = deafultPopulationSize
         self.seed=seed
-        self.problem_to_solve = ""  # DAP or DDAP
+        self.problem_to_solve = problemToSolve
         self.demands_list = demandList
         self.links_list = linkList
 
@@ -57,7 +57,8 @@ class Evelutionary:
         not_improved_counter = 0
 
         self.start_time = time.time()
-
+        with open("data.csv","w+") as f:
+                f.write("Generation counter, Current Fitness, Best Fitnes\n")
         while self.stop_condition(time_elapsed, generations_counter, mutations_counter, not_improved_counter):
 
             # Pick which fitness to prioritise based on chosen algorithm, then recalculate the relevant parameters
@@ -72,7 +73,15 @@ class Evelutionary:
                 best_fitness_list.append(best_fitness)
             else:
                 pass
-
+            # print(generations_counter,"current_fitness",current_fitness,"best_fitness",best_fitness)
+            with open("data.csv","a+") as f:
+                f.write(str(generations_counter))
+                f.write(",")
+                f.write(str(current_fitness))
+                f.write(",")
+                f.write(str(best_fitness))
+                f.write("\n")
+            
             # Crossover and recalculate fitness
             new_population = self.crossover_chromosomes(
                 current_population,
@@ -122,7 +131,6 @@ class Evelutionary:
                 best_chromosome=best_chromosome,
                 link_load_list=link_loads,
                 link_size_list=link_sizes,
-                network=123
             )
 
         result.print()
@@ -289,7 +297,7 @@ class Evelutionary:
 
             if self.problem_to_solve == "DAP":
                 for e in range(len(links)):
-                    f[e] = l[e] - links[e].number_of_modules * links[e].numOfLambdas  # Calc link overloads
+                    f[e] = l[e] - links[e].fibersInCable * links[e].numOfLambdas  # Calc link overloads
                 chromosome.fitness = max(f)
 
             else:  # DDAP
@@ -324,7 +332,7 @@ class Evelutionary:
     # Check if given link is in a given demand path
     def check_link_in_demand(self,link, demand, path_num):
         demand_path = demand.demandPaths[path_num]
-        return str(link) in demand_path.id_demand_path
+        return str(link) in str(demand_path.link_list)
 
 
     def get_random_bool(self,probability: float):
